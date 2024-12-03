@@ -1,16 +1,18 @@
-Config = {}
-
-Config = {
+return {
     Dealer = {
+        Type = "ox_target", -- Either ox_target or rep-npctalk
         Model = "g_m_m_armboss_01",
         Spawn = vec4(341.9528, -2734.5386, 1.7541, 332.4635),
     },
+    SkillCheck = {
+        Difficulty = {'medium', 'medium', 'easy', 'medium', 'hard'},
+        Keys = {'w', 'a', 's', 'd'},
+    },
     Account = "cash", -- Item to be given after exchanged cash, bank, crypto
     WashDuration = 30, -- Amount of time taken to wash black money in secs
-    BlackMoney = "black_money",
-    Hawala = "moneywash_hawala", -- Item to be exchanged with money
+    BlackMoney = "black_money", -- Black money item name
     Percentage = 20, -- Amount of percentage to be removed
-    Locations = {
+    Locations = { -- Random spawn location for machine
         vec4(2872.7603, -1445.3123, 1.7773, 237.2304),
         vec4(453.8481, 5581.6206, 781.1887, 353.5473),
         vec4(-1144.3933, 4908.6147, 220.9686, 33.0150),

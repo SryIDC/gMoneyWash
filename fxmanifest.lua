@@ -5,7 +5,7 @@ lua54 "yes"
 name "Moneywash"
 author "gigo"
 version "1.0.0"
-description "Moneywash for genesis"
+description "Simple moneywash system"
 
 shared_scripts {
     "config.lua",

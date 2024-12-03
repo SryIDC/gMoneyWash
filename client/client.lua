@@ -1,9 +1,12 @@
-local ActivityPed
+local Config = require('config')
 local Washing = false
 local Washer = "bkr_prop_prtmachine_dryer_spin"
 CreateThread(function()
     lib.requestModel(Washer, 5000)
-    DealerPed()
+    if Config.Dealer.Type == "ox_target" then
+        DealerPed()
+    elseif Config.Dealer.Type == "rep-npctalk" then
+    end
 end)
 
 function DealerPed()
@@ -43,11 +46,8 @@ function DealerPed()
 end
 
 function StartActivity()
-    local hash = GetHashKey(actped)
     local randspawn = math.random(1, #Config.Locations)
     local spawn = Config.Locations[randspawn]
-
-    ActivityPed = CreatePed("PED_TYPE_MISSION", hash, spawn.x, spawn.y, spawn.z - 0.98, spawn.w, false, false)
     Machine = CreateObject(GetHashKey(Washer), spawn.x, spawn.y, spawn.z, false, false, false)
     SetEntityHeading(Machine, spawn.w)
     blip = AddBlipForEntity(Machine)
@@ -60,11 +60,11 @@ function StartActivity()
     AddTextComponentString(label)
     EndTextCommandSetBlipName(blip)
 
-    exports.ox_target:addLocalEntity(ActivityPed, {
+    exports.ox_target:addLocalEntity(Machine, {
         {
-            label = "Exchange Money",
+            label = "Wash Money",
             icon = "fa-solid fa-money-bill",
-            name = "MoneyWash:exchange",
+            name = "MoneyWash:wash",
             canInteract = function()
                 local item = exports.ox_inventory:Search('count', Config.BlackMoney)
                 if item > 0 then
@@ -79,6 +79,8 @@ function StartActivity()
 end
 
 function WashMoney()
+    local success = lib.skillcheck(Config.SkillCheck.Difficulty, Config.SkillCheck.Keys)
+    if not success then return lib.notify({ description = "Failed to wash money!", type = "error" }) end
     local item = exports.ox_inventory:Search('count', Config.BlackMoney)
     local deduction = math.floor(item * (Config.Percentage / 100))
     local washedmoney = math.floor(item - deduction)
@@ -109,7 +111,7 @@ function WashMoney()
             icon =
             "fa-solid fa-money-bill"
         })
-        exports.ox_target:removeLocalEntity(ActivityPed, "MoneyWash:exchange")
+        exports.ox_target:removeLocalEntity(Machine, "MoneyWash:wash")
         SetTimeout(5000, function()
             if DoesEntityExist(Machine) then
                 DeleteEntity(Machine)
